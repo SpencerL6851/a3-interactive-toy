@@ -10,6 +10,7 @@ namespace MohawkGame2D
     /// </summary>
     public class Game
     {
+        Snake Player = new();
         /// <summary>
         ///     Setup runs once before the game loop begins.
         /// </summary>
@@ -25,7 +26,10 @@ namespace MohawkGame2D
         /// </summary>
         public void Update()
         {
-            Window.ClearBackground(255);
+            Window.ClearBackground(Color.Green);
+            if (Input.IsKeyboardKeyPressed(KeyboardKey.Space)) { Player.AddSegment(); }
+            Player.Update();
+            
         }
     }
 

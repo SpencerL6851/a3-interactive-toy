@@ -79,9 +79,32 @@ public class Snake()
         Draw.LineColor = Draw.FillColor = Color.Black;
     }
 
-    public void DrawBody()
+    /// <summary>
+    /// This should be called every frame.
+    /// </summary>
+    public void Update()
     {
+        float angle = 0f;
+        if (Input.IsKeyboardKeyDown(KeyboardKey.Left))
+        {
+            angle -= 6f * Time.DeltaTime;
+        }
+        if (Input.IsKeyboardKeyDown(KeyboardKey.Right))
+        {
+            angle += 6f * Time.DeltaTime;
+        }
+        BodyArray[0].Direction = RotateVector(BodyArray[0].Direction, angle, false);
+        BodyArray[0].Position += BodyArray[0].Direction * 225 * Time.DeltaTime;
         for (int i = 0; i < BodyArray.Length; i++) 
+        {
+            if (i != 0)
+            {
+                BodyArray[i].ConstrainAngle(BodyArray[i - 1].Direction);
+                BodyArray[i].ConstrainDistance(BodyArray[i - 1].Position);
+                
+            }
+        }
+        for (int i = 0; i < BodyArray.Length; i++)
         {
             float radius = BodyArray[0].DesiredDistance - (i * (BodyArray[0].DesiredDistance / 2) / BodyArray.Length);
             if (Shadow)
@@ -91,7 +114,7 @@ public class Snake()
             else
             {
                 Draw.LineSize = 0;
-                Draw.FillColor = new((int)(96 - (i * 64 / BodyArray.Length)), 64, (int)(96 + (i * 64 / BodyArray.Length)));
+                Draw.FillColor = new((96 - (i * 64 / BodyArray.Length)), 64, (96 + (i * 64 / BodyArray.Length)));
             }
             if (i == 0)
             {
@@ -172,69 +195,6 @@ public class Snake()
                 }
             }
         }
-    }
-
-    /// <summary>
-    /// This should be called every frame.
-    /// </summary>
-    public void Update()
-    {
-        float angle = 0f;
-        if (Input.IsKeyboardKeyDown(KeyboardKey.Left))
-        {
-            angle -= 6f * Time.DeltaTime;
-        }
-        if (Input.IsKeyboardKeyDown(KeyboardKey.Right))
-        {
-            angle += 6f * Time.DeltaTime;
-        }
-        BodyArray[0].Direction = RotateVector(BodyArray[0].Direction, angle, false);
-        BodyArray[0].Position += BodyArray[0].Direction * 225 * Time.DeltaTime;
-        for (int i = 0; i < BodyArray.Length; i++) 
-        {
-            if (i != 0)
-            {
-                BodyArray[i].ConstrainAngle(BodyArray[i - 1].Direction);
-                BodyArray[i].ConstrainDistance(BodyArray[i - 1].Position);
-                
-            }
-        }
-        DrawBody();
-        //for (int i = BodyArray.Length - 1; i >= 0; i--)
-        //{
-        //    Draw.LineColor = Color.Black;
-        //    if (!Shadow)
-        //    {
-        //        if (i % 2 == 0)
-        //        {
-        //            Draw.FillColor = new(96, 64, 128);
-        //            Draw.LineColor = new(48, 32, 64);
-        //        }
-        //        else
-        //        {
-        //            Draw.FillColor = new(128, 96, 196);
-        //            Draw.LineColor = new(64, 48, 98);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        Draw.LineColor = Draw.FillColor = Color.Black;
-        //    }
-        //    Draw.Circle(BodyArray[i].Position, BodyArray[0].DesiredDistance - (i * (BodyArray[0].DesiredDistance / 2) / BodyArray.Length));
-        //    if (i == 0)
-        //    {
-        //        if (Shadow)
-        //        {
-        //            Draw.LineColor = Draw.FillColor = Color.White;
-        //        }
-        //        else
-        //        {
-        //            Draw.LineColor = Draw.FillColor = Color.Black;
-        //        }
-        //        Draw.Circle(BodyArray[0].Position + RotateVector(BodyArray[0].Direction, 50, true) * (BodyArray[0].DesiredDistance * 0.7f), (BodyArray[0].DesiredDistance * 0.2f));
-        //        Draw.Circle(BodyArray[0].Position + RotateVector(BodyArray[0].Direction, -50, true) * (BodyArray[0].DesiredDistance * 0.7f), (BodyArray[0].DesiredDistance * 0.2f));
-        //    }
-        //}
         if (Shadow)
         {
             ShowSpine();

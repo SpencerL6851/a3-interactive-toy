@@ -19,7 +19,7 @@ namespace MohawkGame2D
         {
             Window.SetSize(800, 600);
             Window.SetTitle("Slithering Snake");
-            for (int i = 0; i < 5; i++) { Player.AddSegment(); }
+            for (int i = 0; i < 7; i++) { Player.AddSegment(); }
         }
 
         /// <summary>

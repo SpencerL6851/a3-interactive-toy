@@ -1,7 +1,5 @@
 ﻿using System;
-using System.ComponentModel.Design;
 using System.Numerics;
-using System.Runtime.CompilerServices;
 
 namespace MohawkGame2D;
 
@@ -39,7 +37,7 @@ public class Snake()
     /// <summary>
     /// Draws points describing the outline of the snake, with extra points on the head and tail. (DEBUG)
     /// </summary>
-    public void ShowBodyShape()
+    public void ShowBodyOutline()
     {
         Draw.LineColor = Draw.FillColor = new(255, 64, 64);
         for (int i = 0; i < BodyArray.Length; i++)
@@ -81,6 +79,101 @@ public class Snake()
         Draw.LineColor = Draw.FillColor = Color.Black;
     }
 
+    public void DrawBody()
+    {
+        for (int i = 0; i < BodyArray.Length; i++) 
+        {
+            float radius = BodyArray[0].DesiredDistance - (i * (BodyArray[0].DesiredDistance / 2) / BodyArray.Length);
+            if (Shadow)
+            {
+                Draw.LineColor = Draw.FillColor = Color.Black;
+            }
+            else
+            {
+                Draw.LineSize = 0;
+                Draw.FillColor = new((int)(96 - (i * 64 / BodyArray.Length)), 64, (int)(96 + (i * 64 / BodyArray.Length)));
+            }
+            if (i == 0)
+            {
+                Draw.Quad(
+                    BodyArray[0].Position + RotateVector(BodyArray[0].Direction, 90, true) * radius,
+                    BodyArray[0].Position + RotateVector(BodyArray[0].Direction, 45, true) * radius,
+                    BodyArray[0].Position + BodyArray[0].Direction * radius,
+                    BodyArray[0].Position
+                    );
+                Draw.Quad(
+                    BodyArray[0].Position + RotateVector(BodyArray[0].Direction, -90, true) * radius,
+                    BodyArray[0].Position + RotateVector(BodyArray[0].Direction, -45, true) * radius,
+                    BodyArray[0].Position + BodyArray[0].Direction * radius,
+                    BodyArray[0].Position
+                    );
+                Draw.LineSize = 1;
+                Draw.LineColor = Color.Black;
+                Draw.PolyLine(
+                    BodyArray[0].Position + RotateVector(BodyArray[0].Direction, 90, true) * radius,
+                    BodyArray[0].Position + RotateVector(BodyArray[0].Direction, 45, true) * radius,
+                    BodyArray[0].Position + BodyArray[0].Direction * radius,
+                    BodyArray[0].Position + RotateVector(BodyArray[0].Direction, -45, true) * radius,
+                    BodyArray[0].Position + RotateVector(BodyArray[0].Direction, -90, true) * radius
+                    );
+                if (Shadow)
+                {
+                    Draw.LineColor = Draw.FillColor = Color.White;
+                }
+                else
+                {
+                    Draw.LineColor = Draw.FillColor = Color.Black;
+                }
+                Draw.Circle(BodyArray[0].Position + RotateVector(BodyArray[0].Direction, 50, true) * (BodyArray[0].DesiredDistance * 0.7f), (BodyArray[0].DesiredDistance * 0.2f));
+                Draw.Circle(BodyArray[0].Position + RotateVector(BodyArray[0].Direction, -50, true) * (BodyArray[0].DesiredDistance * 0.7f), (BodyArray[0].DesiredDistance * 0.2f));
+            }
+            else
+            {
+                Draw.Quad(
+                    BodyArray[i].Position + RotateVector(BodyArray[i].Direction, 90, true) * radius,
+                    BodyArray[i - 1].Position + RotateVector(BodyArray[i - 1].Direction, 90, true) * radius,
+                    BodyArray[i - 1].Position + RotateVector(BodyArray[i - 1].Direction, -90, true) * radius,
+                    BodyArray[i].Position + RotateVector(BodyArray[i].Direction, -90, true) * radius
+                );
+                Draw.LineSize = 1;
+                Draw.LineColor = Color.Black;
+                Draw.Line(
+                    BodyArray[i].Position + RotateVector(BodyArray[i].Direction, 90, true) * radius,
+                    BodyArray[i - 1].Position + RotateVector(BodyArray[i - 1].Direction, 90, true) * radius
+                    );
+                Draw.Line(
+                    BodyArray[i - 1].Position + RotateVector(BodyArray[i - 1].Direction, -90, true) * radius,
+                    BodyArray[i].Position + RotateVector(BodyArray[i].Direction, -90, true) * radius
+                    );
+                if (i == BodyArray.Length - 1)
+                {
+                    Draw.LineSize = 0;
+                    Draw.Quad(
+                        BodyArray[i].Position - RotateVector(BodyArray[i].Direction, 90, true) * radius,
+                        BodyArray[i].Position - RotateVector(BodyArray[i].Direction, 45, true) * radius,
+                        BodyArray[i].Position - BodyArray[i].Direction * radius,
+                        BodyArray[i].Position
+                        );
+                    Draw.Quad(
+                        BodyArray[i].Position - RotateVector(BodyArray[i].Direction, -90, true) * radius,
+                        BodyArray[i].Position - RotateVector(BodyArray[i].Direction, -45, true) * radius,
+                        BodyArray[i].Position - BodyArray[i].Direction * radius,
+                        BodyArray[i].Position
+                        );
+                    Draw.LineSize = 1;
+                    Draw.LineColor = Color.Black;
+                    Draw.PolyLine(
+                        BodyArray[i].Position - RotateVector(BodyArray[i].Direction, 90, true) * radius,
+                        BodyArray[i].Position - RotateVector(BodyArray[i].Direction, 45, true) * radius,
+                        BodyArray[i].Position - BodyArray[i].Direction * radius,
+                        BodyArray[i].Position - RotateVector(BodyArray[i].Direction, -45, true) * radius,
+                        BodyArray[i].Position - RotateVector(BodyArray[i].Direction, -90, true) * radius
+                        );
+                }
+            }
+        }
+    }
+
     /// <summary>
     /// This should be called every frame.
     /// </summary>
@@ -101,41 +194,51 @@ public class Snake()
         {
             if (i != 0)
             {
+                BodyArray[i].ConstrainAngle(BodyArray[i - 1].Direction);
                 BodyArray[i].ConstrainDistance(BodyArray[i - 1].Position);
+                
             }
         }
-        for (int i = BodyArray.Length - 1; i >= 0; i--)
-        {
-            Draw.LineColor = Color.Black;
-            if (!Shadow)
-            {
-                if (i % 2 == 0)
-                {
-                    Draw.FillColor = new(96, 64, 128);
-                    Draw.LineColor = new(48, 32, 64);
-                }
-                else
-                {
-                    Draw.FillColor = new(128, 96, 196);
-                    Draw.LineColor = new(64, 48, 98);
-                }
-            }
-            else
-            {
-                Draw.LineColor = Draw.FillColor = Color.Black;
-            }
-            Draw.Circle(BodyArray[i].Position, BodyArray[0].DesiredDistance - (i * (BodyArray[0].DesiredDistance / 2) / BodyArray.Length));
-            if (i == 0)
-            {
-                Draw.LineColor = Draw.FillColor = Color.Black;
-                Draw.Circle(BodyArray[0].Position + RotateVector(BodyArray[0].Direction, 50, true) * (BodyArray[0].DesiredDistance * 0.7f), (BodyArray[0].DesiredDistance * 0.2f));
-                Draw.Circle(BodyArray[0].Position + RotateVector(BodyArray[0].Direction, -50, true) * (BodyArray[0].DesiredDistance * 0.7f), (BodyArray[0].DesiredDistance * 0.2f));
-            }
-        }
+        DrawBody();
+        //for (int i = BodyArray.Length - 1; i >= 0; i--)
+        //{
+        //    Draw.LineColor = Color.Black;
+        //    if (!Shadow)
+        //    {
+        //        if (i % 2 == 0)
+        //        {
+        //            Draw.FillColor = new(96, 64, 128);
+        //            Draw.LineColor = new(48, 32, 64);
+        //        }
+        //        else
+        //        {
+        //            Draw.FillColor = new(128, 96, 196);
+        //            Draw.LineColor = new(64, 48, 98);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        Draw.LineColor = Draw.FillColor = Color.Black;
+        //    }
+        //    Draw.Circle(BodyArray[i].Position, BodyArray[0].DesiredDistance - (i * (BodyArray[0].DesiredDistance / 2) / BodyArray.Length));
+        //    if (i == 0)
+        //    {
+        //        if (Shadow)
+        //        {
+        //            Draw.LineColor = Draw.FillColor = Color.White;
+        //        }
+        //        else
+        //        {
+        //            Draw.LineColor = Draw.FillColor = Color.Black;
+        //        }
+        //        Draw.Circle(BodyArray[0].Position + RotateVector(BodyArray[0].Direction, 50, true) * (BodyArray[0].DesiredDistance * 0.7f), (BodyArray[0].DesiredDistance * 0.2f));
+        //        Draw.Circle(BodyArray[0].Position + RotateVector(BodyArray[0].Direction, -50, true) * (BodyArray[0].DesiredDistance * 0.7f), (BodyArray[0].DesiredDistance * 0.2f));
+        //    }
+        //}
         if (Shadow)
         {
             ShowSpine();
-            ShowBodyShape();
+            ShowBodyOutline();
         }
     }
 }

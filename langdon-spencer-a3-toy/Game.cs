@@ -11,6 +11,7 @@ namespace MohawkGame2D
     public class Game
     {
         Snake Player = new();
+
         /// <summary>
         ///     Setup runs once before the game loop begins.
         /// </summary>
@@ -18,7 +19,7 @@ namespace MohawkGame2D
         {
             Window.SetSize(800, 600);
             Window.SetTitle("Slithering Snake");
-            Draw.FillColor = Color.Red;
+            for (int i = 0; i < 5; i++) { Player.AddSegment(); }
         }
 
         /// <summary>
@@ -26,10 +27,10 @@ namespace MohawkGame2D
         /// </summary>
         public void Update()
         {
-            Window.ClearBackground(Color.Green);
+            Window.ClearBackground(new Color(8, 64, 8));
             if (Input.IsKeyboardKeyPressed(KeyboardKey.Space)) { Player.AddSegment(); }
+            if (Input.IsKeyboardKeyPressed(KeyboardKey.Tab)) { Player.Shadow = !Player.Shadow; }
             Player.Update();
-            
         }
     }
 

@@ -115,7 +115,7 @@ public class Snake()
 
         for (int i = 3; i < BodyArray.Length; i++)
         {
-            BodyArray[i].IsColliding = Vector2.Distance(BodyArray[0].Position, BodyArray[i].Position) < (2 * BodyArray[0].DesiredDistance) - (i * (BodyArray[0].DesiredDistance / 2) / BodyArray.Length);
+            BodyArray[i].IsColliding = Vector2.Distance(BodyArray[0].Position, BodyArray[i].Position) < (2.1 * BodyArray[0].DesiredDistance) - (i * (BodyArray[0].DesiredDistance / 2) / BodyArray.Length);
             if (BodyArray[i].IsColliding)
             {
                 throw new Exception("Crashing program on purpose.");

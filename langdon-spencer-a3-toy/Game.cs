@@ -11,7 +11,8 @@ namespace MohawkGame2D
     public class Game
     {
         Snake Player = new();
-
+        public Food[] food = new Food[5];
+        private readonly bool debug = true;
         /// <summary>
         ///     Setup runs once before the game loop begins.
         /// </summary>
@@ -19,7 +20,13 @@ namespace MohawkGame2D
         {
             Window.SetSize(800, 600);
             Window.SetTitle("Slithering Snake");
-            for (int i = 0; i < 7; i++) { Player.AddSegment(); }
+            for (int i = 0; i < 5; i++) { Player.AddSegment(); }
+            
+            for (int i = 0; i < food.Length; i++)
+            {
+                food[i] = new Food();
+                food[i].RandomizePosition(Player); 
+            }
         }
 
         /// <summary>
@@ -27,10 +34,14 @@ namespace MohawkGame2D
         /// </summary>
         public void Update()
         {
-            Window.ClearBackground(new Color(8, 64, 8));
+            Window.ClearBackground(new Color(24, 96, 24));
             if (Input.IsKeyboardKeyPressed(KeyboardKey.Space)) { Player.AddSegment(); }
-            if (Input.IsKeyboardKeyPressed(KeyboardKey.Tab)) { Player.Shadow = !Player.Shadow; }
+            
+            if (Input.IsKeyboardKeyPressed(KeyboardKey.Tab) & debug) { Player.Shadow = !Player.Shadow; }
+            
+            if (Input.IsKeyboardKeyPressed(KeyboardKey.P)) { Player.Paused = !Player.Paused; }
             Player.Update();
+            for (int i = 0; i < food.Length; i++) { food[i].Update(Player); }
         }
     }
 

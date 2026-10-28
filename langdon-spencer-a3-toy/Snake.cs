@@ -7,9 +7,8 @@ public class Snake()
 {
     public bool Shadow { get; set; }
     public bool Paused { get; set; }
-    public float SpeedFactor { get; set; } = 0.075f;
-    private ColorF Color1 { get; } = new(0f, 0f, 0.5f);
-    private ColorF Color2 { get; } = new(0.25f, 0f, 0.5f);
+    private ColorF Color1 { get; } = new(0f, 0.75f, 1f);
+    private ColorF Color2 { get; } = new(0.5f, 0.75f, 1f);
     public BodyPart[] BodyArray { get; set; } = [new(new Vector2(400f, 300f), new Vector2(1f, 0f)), new(new Vector2(390f, 300f), new Vector2(1f, 0f))];
     
     /// <summary>
@@ -65,6 +64,7 @@ public class Snake()
         Draw.LineColor = Draw.FillColor = Color.Black;
     }
 
+
     /// <summary>
     /// Draws the spine of the snake. (DEBUG)
     /// </summary>
@@ -97,15 +97,15 @@ public class Snake()
         {
             if (Input.IsKeyboardKeyDown(KeyboardKey.Left))
             {
-                angle -= 5.5f * (SpeedFactor * BodyArray.Length / 2) * Time.DeltaTime;
+                angle -= 5f * Time.DeltaTime;
             }
 
             if (Input.IsKeyboardKeyDown(KeyboardKey.Right))
             {
-                angle += 5.5f * (SpeedFactor * BodyArray.Length / 2) * Time.DeltaTime;
+                angle += 5f * Time.DeltaTime;
             }
             BodyArray[0].Direction = RotateVector(BodyArray[0].Direction, angle, false);
-            BodyArray[0].Position += BodyArray[0].Direction * 180 * (SpeedFactor * BodyArray.Length) * Time.DeltaTime;
+            BodyArray[0].Position += BodyArray[0].Direction * 180 * Time.DeltaTime;
         }
             
         for (int i = 1; i < BodyArray.Length; i++)
@@ -115,8 +115,7 @@ public class Snake()
 
         for (int i = 3; i < BodyArray.Length; i++)
         {
-            BodyArray[i].IsColliding = Vector2.Distance(BodyArray[0].Position, BodyArray[i].Position) < (2.1 * BodyArray[0].DesiredDistance) - (i * (BodyArray[0].DesiredDistance / 2) / BodyArray.Length);
-            if (BodyArray[i].IsColliding)
+            if (Vector2.Distance(BodyArray[0].Position, BodyArray[i].Position) < (1.85 * BodyArray[0].DesiredDistance) - (i * (BodyArray[0].DesiredDistance / 2) / BodyArray.Length))
             {
                 throw new Exception("Crashing program on purpose.");
             }
@@ -134,10 +133,6 @@ public class Snake()
             if (Shadow)
             {
                 Draw.FillColor = Color.Black;
-            }
-            else if (BodyArray[i].IsColliding)
-            {
-                Draw.FillColor = new ColorF(1f, 0.5f, 0.5f);
             }
             else
             {
@@ -158,7 +153,8 @@ public class Snake()
                     BodyArray[0].Position + BodyArray[0].Direction * radius,
                     BodyArray[0].Position
                     );
-                Draw.FillColor = Color.White;
+                if (Shadow) {  Draw.FillColor = Color.White; } 
+                else { Draw.FillColor = Color.Black; }
                 Draw.Circle(BodyArray[0].Position + RotateVector(BodyArray[0].Direction, 50, true) * (BodyArray[0].DesiredDistance * 0.7f), (BodyArray[0].DesiredDistance * 0.2f));
                 Draw.Circle(BodyArray[0].Position + RotateVector(BodyArray[0].Direction, -50, true) * (BodyArray[0].DesiredDistance * 0.7f), (BodyArray[0].DesiredDistance * 0.2f));
             }

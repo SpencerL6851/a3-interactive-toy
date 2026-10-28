@@ -2,10 +2,10 @@
 using System.Numerics;
 
 namespace MohawkGame2D;
-
 public class Food
 {
     public Vector2 Position;
+    public bool Spawned = false;
     private readonly float SpawningDeadzone = 100f;
 
     /// <summary>
@@ -21,8 +21,7 @@ public class Food
             {
                 validPosition = false; break;
             }
-            if (Position.X < SpawningDeadzone | Position.X > Window.Width - SpawningDeadzone |
-            Position.Y < SpawningDeadzone | Position.Y > Window.Height - SpawningDeadzone)
+            if (Position.X < SpawningDeadzone | Position.X > Window.Width - SpawningDeadzone | Position.Y < SpawningDeadzone | Position.Y > Window.Height - SpawningDeadzone)
             {
                 validPosition = false; break;
             }
@@ -33,12 +32,11 @@ public class Food
             validPosition = true;
             for (int i = 0; i < player.BodyArray.Length; i++)
             {
-                if (Vector2.Distance(Position, player.BodyArray[i].Position) < player.BodyArray[0].DesiredDistance - (i * (player.BodyArray[0].DesiredDistance / 2) / player.BodyArray.Length))
+                if (Vector2.Distance(Position, player.BodyArray[i].Position) < 2 * player.BodyArray[0].DesiredDistance - (i * (player.BodyArray[0].DesiredDistance / 2) / player.BodyArray.Length))
                 {
                     validPosition = false; break;
                 }
-                if (Position.X < SpawningDeadzone | Position.X > Window.Width - SpawningDeadzone |
-            Position.Y < SpawningDeadzone | Position.Y > Window.Height - SpawningDeadzone)
+                if (Position.X < SpawningDeadzone | Position.X > Window.Width - SpawningDeadzone | Position.Y < SpawningDeadzone | Position.Y > Window.Height - SpawningDeadzone)
                 {
                     validPosition = false; break;
                 }
@@ -46,18 +44,21 @@ public class Food
         }
     }
     /// <summary>
-    /// This should be run every frame.
+    /// This should be run every unpaused frame.
     /// </summary>
     public void Update(Snake player)
     {
-        Draw.FillColor = Color.Yellow;
-        Draw.Circle(Position, 10);
         for (int i = 0; i < player.BodyArray.Length; i++)
         {
-            if (Vector2.Distance(Position, player.BodyArray[i].Position) < 2 * (player.BodyArray[0].DesiredDistance - (i * (player.BodyArray[0].DesiredDistance / 2) / player.BodyArray.Length)))
+            if (Spawned)
             {
-                player.AddSegment();
-                RandomizePosition(player);
+                Draw.FillColor = Color.Yellow;
+                Draw.Circle(Position, player.BodyArray[0].DesiredDistance / 1.5f);
+                if (Vector2.Distance(Position, player.BodyArray[i].Position) < 2 * (player.BodyArray[0].DesiredDistance - (i * (player.BodyArray[0].DesiredDistance / 2) / player.BodyArray.Length)))
+                {
+                    player.AddSegment();
+                    Spawned = false;
+                }
             }
         }
     }

@@ -8,13 +8,13 @@ public struct BodyPart(Vector2 position, Vector2 direction)
     public Vector2 Position { get; set; } = position;
     public Vector2 Direction { get; set; } = direction;
     public float DesiredDistance { get; } = 17.5f;
-    public bool IsColliding { get; set;  } = false;
+
     /// <summary>
     /// Rotates a vector by a given angle.
     /// </summary>
     /// <param name="degrees"> If true, specified angle is converted to radians before calculation</param>
     /// <returns>The rotated vector.</returns>
-    public Vector2 RotateVector(Vector2 vector, float angle, bool degrees)
+    public readonly Vector2 RotateVector(Vector2 vector, float angle, bool degrees)
     {
         float newAngle = angle;
         if (degrees)

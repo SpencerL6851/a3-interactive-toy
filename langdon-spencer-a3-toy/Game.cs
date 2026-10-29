@@ -39,7 +39,7 @@ namespace MohawkGame2D
             // Spawning food every 2.5s if there are less than 5 food spawned.
             if (!Player.Paused)
             {
-                foodSpawnTimer += Time.DeltaTime;
+                if (food[^1] != null) { foodSpawnTimer += Time.DeltaTime; }
                 if (foodSpawnTimer >= 2.5f)
                 {
                     for (int i = 0; i < food.Length; i++)
@@ -61,11 +61,12 @@ namespace MohawkGame2D
             if (Input.IsKeyboardKeyPressed(KeyboardKey.Tab) & debug) { Player.Shadow = !Player.Shadow; }
             
             if (Input.IsKeyboardKeyPressed(KeyboardKey.P)) { Player.Paused = !Player.Paused; }
-            Player.Update();
+            
             for (int i = 0; i < food.Length; i++)
             {
                 food[i].Update(Player);
             }
+            Player.Update();
             if (Player.Paused)
             {
                 Draw.FillColor = new ColorF(0f, 0f, 0f, 0.4f);

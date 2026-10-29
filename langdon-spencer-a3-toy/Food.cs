@@ -48,17 +48,14 @@ public class Food
     /// </summary>
     public void Update(Snake player)
     {
-        for (int i = 0; i < player.BodyArray.Length; i++)
+        if (Spawned)
         {
-            if (Spawned)
+            Draw.FillColor = Color.Yellow;
+            Draw.Circle(Position, player.BodyArray[0].DesiredDistance / 1.5f);
+            if (Vector2.Distance(Position, player.BodyArray[0].Position) < 2 * player.BodyArray[0].DesiredDistance)
             {
-                Draw.FillColor = Color.Yellow;
-                Draw.Circle(Position, player.BodyArray[0].DesiredDistance / 1.5f);
-                if (Vector2.Distance(Position, player.BodyArray[i].Position) < 2 * (player.BodyArray[0].DesiredDistance - (i * (player.BodyArray[0].DesiredDistance / 2) / player.BodyArray.Length)))
-                {
-                    player.AddSegment();
-                    Spawned = false;
-                }
+                player.AddSegment();
+                Spawned = false;
             }
         }
     }

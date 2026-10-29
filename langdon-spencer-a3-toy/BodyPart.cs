@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace MohawkGame2D;
 
-public struct BodyPart(Vector2 position, Vector2 direction)
+public class BodyPart(Vector2 position, Vector2 direction)
 {
     public Vector2 Position { get; set; } = position;
     public Vector2 Direction { get; set; } = direction;

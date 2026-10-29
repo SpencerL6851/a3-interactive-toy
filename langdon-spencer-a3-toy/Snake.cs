@@ -95,31 +95,15 @@ public class Snake()
         float angle = 0f;
         if (!Paused)
         {
-            if (Input.IsKeyboardKeyDown(KeyboardKey.Left))
-            {
-                angle -= 5f * Time.DeltaTime;
-            }
-
-            if (Input.IsKeyboardKeyDown(KeyboardKey.Right))
-            {
-                angle += 5f * Time.DeltaTime;
-            }
+            if (Input.IsKeyboardKeyDown(KeyboardKey.Left)) { angle -= 5f * Time.DeltaTime; }
+            if (Input.IsKeyboardKeyDown(KeyboardKey.Right)) { angle += 5f * Time.DeltaTime; }
             BodyArray[0].Direction = RotateVector(BodyArray[0].Direction, angle, false);
             BodyArray[0].Position += BodyArray[0].Direction * 180 * Time.DeltaTime;
         }
             
-        for (int i = 1; i < BodyArray.Length; i++)
-        {
-            BodyArray[i].ConstrainDistance(BodyArray[i - 1].Position);
-        }
+        for (int i = 1; i < BodyArray.Length; i++) { BodyArray[i].ConstrainDistance(BodyArray[i - 1].Position); }
 
-        for (int i = 3; i < BodyArray.Length; i++)
-        {
-            if (Vector2.Distance(BodyArray[0].Position, BodyArray[i].Position) < (1.85 * BodyArray[0].DesiredDistance) - (i * (BodyArray[0].DesiredDistance / 2) / BodyArray.Length))
-            {
-                throw new Exception("Crashing program on purpose.");
-            }
-        }
+        for (int i = 3; i < BodyArray.Length; i++) { if (Vector2.Distance(BodyArray[0].Position, BodyArray[i].Position) < (1.85 * BodyArray[0].DesiredDistance) - (i * (BodyArray[0].DesiredDistance / 2) / BodyArray.Length)) { throw new Exception("Crashing program on purpose."); } }
         if (BodyArray[0].Position.X < BodyArray[0].DesiredDistance | BodyArray[0].Position.X > Window.Width - BodyArray[0].DesiredDistance |
             BodyArray[0].Position.Y < BodyArray[0].DesiredDistance | BodyArray[0].Position.Y > Window.Height - BodyArray[0].DesiredDistance)
         {

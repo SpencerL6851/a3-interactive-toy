@@ -21,7 +21,6 @@ namespace MohawkGame2D
         public void Setup()
         {
             Window.SetSize(800, 600);
-            Window.ClearBackground(new Color(24, 96, 24));
             Window.SetTitle("Slithering Snake");
             for (int i = 0; i < 5; i++) { Player.AddSegment(); }
             for (int i = 0; i < food.Length; i++)
@@ -71,6 +70,12 @@ namespace MohawkGame2D
             {
                 Draw.FillColor = new ColorF(0f, 0f, 0f, 0.4f);
                 Draw.Rectangle(new Vector2(0, 0), Window.Size);
+                Draw.FillColor = Color.OffWhite;
+                if (Math.Round(Time.SecondsElapsed) % 2 == 0)
+                {
+                    Draw.Rectangle(10, 10, 10, 30);
+                    Draw.Rectangle(25, 10, 10, 30);
+                }
             }
         }
     }
